@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 train_menu.py
-Main menu for the Train Rooms (educational simulations only).
+Main menu for the Train Carts (educational simulations only).
 Compatible with your bash wrapper: make sure this file is executable.
 """
 
@@ -12,13 +12,13 @@ import textwrap
 from pathlib import Path
 
 ROOM_SCRIPTS = {
-    "1": "buffer_room.py",
+    "1": "cart-1.c", #Buffer Overflow Training Exercise
     "2": "ddos_room.py",
 }
 
 EXPLAINERS = {
     "1": {
-        "title": "Buffer Overflow",
+        "title": "Cart 1: Buffer Overflow",
         "body": textwrap.dedent("""
         WHAT IT IS (high-level)
         -----------------------
@@ -45,7 +45,7 @@ EXPLAINERS = {
         """)
     },
     "2": {
-        "title": "DDoS — Conceptual Explainer & Defensive Guidance",
+        "title": "Cart 2: DDoS",
         "body": textwrap.dedent("""
         WHAT IT IS (high-level)
         -----------------------
@@ -75,7 +75,7 @@ def clear():
 def print_header():
     print("="*60)
     print(" TRAIN - Intrusion Review (EDUCATIONAL SIMULATIONS ONLY)")
-    print(" NOTE: These rooms are defensive/educational. No exploit code.")
+    print(" NOTE: These carts are defensive/educational. No exploit code.")
     print("="*60)
     print()
 
@@ -102,9 +102,9 @@ def run_room(script_name):
         print(f"[ERROR] failed to run {script_name}: {e}")
 
 def show_help():
-    print("\nHELP — How to use the Train Rooms (educational only):")
-    print(" - Select a room number to launch the room program.")
-    print(" - Each room is a safe simulation that teaches defensive concepts.")
+    print("\nHELP — How to use the Train Carts (educational only):")
+    print(" - Select a cart number to launch the training program.")
+    print(" - Each cart is a safe simulation that teaches defensive concepts.")
     print(" - Do NOT attempt to use these programs against any real system.")
     print(" - For ethical practice, use legal CTF platforms and isolated labs.\n")
 
