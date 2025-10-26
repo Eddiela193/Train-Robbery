@@ -17,8 +17,8 @@ echo -e "\n\n\nThe numbers you find may be located in a file, but you can use di
 sleep 10
 
 echo -e "\n\n\nThere are two different trains set up, with a practice train\nset up on the ports 60-65, corresponding with the order of the carts
-using nc 127.0.0.1 <portnum> will let you tackle the cart. The real train uses ports 100-106
-with 106 being the vault"
+using nc 127.0.0.1 <portnum> will let you tackle the cart. The real train uses ports 100-103
+with 103 being the vault"
 
 sleep 10
 
