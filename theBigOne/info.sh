@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+python3 wrench.py
+
 # Greet the user
 echo "Hi! Welcome to the selection menu."
 echo
