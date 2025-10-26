@@ -10,7 +10,7 @@
 
 #define PORT 103
 #define BUFFER_SIZE 512
-#define TOTAL_KEYS 5
+#define TOTAL_KEYS 6
 #define REQUIRED_KEYS 3
 
 int main() {
@@ -19,7 +19,7 @@ int main() {
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE];
 
-    int keys[TOTAL_KEYS] = {2168, 7018, 303, 404, 505};
+    int keys[TOTAL_KEYS] = {2168, 7018, 303, 404, 505, 3435};
 
     // Create socket
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -56,6 +56,32 @@ int main() {
             continue;
         }
         printf("Client connected!\n");
+        int gyro_pipe[2];
+if (pipe(gyro_pipe) == 0) {
+    pid_t pid = fork();
+    if (pid == 0) {
+        // Child process
+        close(gyro_pipe[0]);
+        dup2(gyro_pipe[1], STDOUT_FILENO);
+        dup2(gyro_pipe[1], STDERR_FILENO);
+        close(gyro_pipe[1]);
+        execlp("python3", "python3", "gyro.py", (char *)NULL);
+        perror("execlp gyro.py");
+        _exit(127);
+    } else if (pid > 0) {
+        // Parent process: stream gyro.py output to client
+        close(gyro_pipe[1]);
+        char gbuf[1024];
+        ssize_t n;
+        while ((n = read(gyro_pipe[0], gbuf, sizeof(gbuf))) > 0) {
+            send(client_fd, gbuf, n, 0);
+        }
+        close(gyro_pipe[0]);
+        waitpid(pid, NULL, 0);
+    }
+} else {
+    perror("pipe gyro");
+}
 
         snprintf(buffer, sizeof(buffer), 
             "Welcome to the Vault! Enter 3 keys separated by spaces:\n");
