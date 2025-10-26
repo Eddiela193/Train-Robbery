@@ -17,8 +17,8 @@ ROOM_SCRIPTS = {
 }
 
 EXPLAINERS = {
-    "1": {
-        "title": "Cart 1: Buffer Overflow",
+    "2": {
+        "title": "Cart 2, the cargo hold: Buffer Overflow",
         "body": textwrap.dedent("""
         WHAT IT IS (high-level)
         -----------------------
@@ -44,8 +44,8 @@ EXPLAINERS = {
         - [Insert Later]
         """)
     },
-    "2": {
-        "title": "Cart 2: DDoS",
+    "1": {
+        "title": "Cart 1, the engine room: DDoS",
         "body": textwrap.dedent("""
         WHAT IT IS (high-level)
         -----------------------
@@ -93,8 +93,8 @@ def print_header():
 
 def show_menu():
     print("Choose a room to enter:")
-    print(" 1) Buffer Overflow (safe simulation & basic intrusion exercise)")
-    print(" 2) DDoS (traffic simulation & mitigation exercise)")
+    print(" 1) DDoS (traffic simulation & mitigation exercise)")
+    print(" 2) Buffer Overflow (safe simulation & basic intrusion exercise)")
     print(" h) Help")
     print(" t) Tools & info")
     print(" q) Quit")
