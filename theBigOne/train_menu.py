@@ -58,6 +58,27 @@ EXPLAINERS = {
         - Logs showing overly long or malformed inputs.
         """)
     },
+    "3": {
+        "title": "Cart 2, the cargo hold: Buffer Overflow",
+        "body": textwrap.dedent("""
+        WHAT IT IS (high-level)
+        -----------------------
+        A SQL injection is a string with special characters that, when parsed
+        can result in unexpected behavior, such as exposing credentials
+
+        HOW IT WORKS (conceptual)
+        -------------------------
+        - A string is crafted that confuses the parsing code
+        - Quotation marks are used to escape the expected sting to change the code
+        - SQL injection can take many forms, but one esentially sets every condition to true,
+        printing every entry possible.
+
+        COMMON INDICATORS (defensive signals)
+        ------------------------------------
+        - Quotation marks in string
+        - Non-regular formats or words
+        """)
+    },
     
     "h": {
         "title": "Cart 1: DDoS",
@@ -107,8 +128,7 @@ def show_menu():
 ROOM_SCRIPTS = {
     "1": "ddos_room.py",    # python script    
     "2": "buf_room.sh",     # shell script
-    "3": ["bash", "-c", "echo 'ad-hoc command'; sleep 1"],  # arbitrary command
-    "h": "help.sh",
+    "3": "sql_room.sh",
     "t": "info.sh",
     "k": "keys.sh"
 }
@@ -166,13 +186,22 @@ def run_room(script):
         return subprocess.run(cmd)
 
 def show_help():
+
+    # Run question.py as a separate script and stream its output to the console
+    python_exec = shutil.which("python3") or shutil.which("python") or sys.executable
+    try:
+        # This will print question.py's stdout/stderr directly to the terminal
+        subprocess.run([python_exec, "question.py"], check=False)
+    except Exception as e:
+        print(f"[ERROR] failed to run question.py: {e}")
+
     print("\nHELP — How to use the Train Carts (educational only):")
     print(" - Select a cart number to launch the training program.")
     print(" - Each cart is a safe simulation that teaches defensive concepts.")
     print(" - Do NOT attempt to use these programs against any real system.")
     print(" - For ethical practice, use legal CTF platforms and isolated labs.\n")
-    print(" - Visit https://github.com/Eddiela193/Train-Robbery for more information\n")
-    print(" - Also check out https://www.fortinet.com/resources/cyberglossary/buffer-overflow\n")
+    print(" - Visit https://github.com/Eddiela193/Train-Robbery for more information")
+    print(" - Also check out https://www.fortinet.com/resources/cyberglossary/buffer-overflow")
 
 def main():
     clear()
@@ -218,7 +247,7 @@ def main():
             print("Exiting. Stay safe and ethical.")
             break
         else:
-            print("Invalid choice. Enter 1, 2, h, t, k,or q.\n")
+            print("Invalid choice. Enter 1, 2,3, h, t, k,or q.\n")
 
 if __name__ == "__main__":
     main()
