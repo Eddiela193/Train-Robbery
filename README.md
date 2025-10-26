@@ -1,5 +1,6 @@
-# Train Heist: An ASCII Art Adventure 🚂💰
+# Train Robbery: An Old School Cyber Heist 🚂💰
 By: Luke Alvarado, Edison La, Jamie Nwachukwu
+
 Embark on a thrilling train heist adventure! This project combines interactive shell scripting with Python-based ASCII art and educational cybersecurity simulations. The core objective is to guide users through a narrative where they plan and execute a virtual train robbery, encountering various security challenges along the way. It's designed to be both entertaining and educational, providing hands-on experience with cybersecurity concepts.
 
 ## 🚀 Key Features
