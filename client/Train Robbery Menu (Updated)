@@ -100,19 +100,63 @@ def show_menu():
     print(" q) Quit")
     print()
 
-def run_room(script_name):
-    # prefer running the script with the same Python; fallback to subprocess
-    path = Path(script_name)
-    if not path.exists():
-        print(f"[ERROR] Room script {script_name} not found.")
-        return
+ROOM_SCRIPTS = {
+    "1": "cart-1.sh",        # shell script
+    "2": "ddos_room.py",     # python script
+    "3": ["bash", "-c", "echo 'ad-hoc command'; sleep 1"],  # arbitrary command
+}
 
-    # Try to execute it as a subprocess so it runs in a new process and can use input()
+def run_room(script):
+    """
+    script may be:
+      - a string path (relative or absolute) to a file
+      - a list/tuple of command tokens (runs directly)
+    Behavior:
+      - If argument is command sequence: run it directly.
+      - If argument is a path:
+          - if executable -> run it (OS will use shebang)
+          - elif extension .sh -> run with bash
+          - elif extension .py -> run with python interpreter
+          - else -> attempt to run with /bin/sh
+    Returns subprocess.CompletedProcess
+    """
+    # If caller passed a command sequence (list/tuple), run it directly.
+    if isinstance(script, (list, tuple)):
+        cmd = list(script)
+        print(f"[run_room] Running command: {cmd}")
+        return subprocess.run(cmd)
+
+    # treat as a string path
+    path = Path(script)
+    if not path.exists():
+        print(f"[run_room] ERROR: {path} not found.")
+        return None
+
+    # If file is executable, run it directly (uses shebang)
+    if os.access(path, os.X_OK):
+        cmd = [str(path)]
+        print(f"[run_room] Executing executable: {cmd}")
+        return subprocess.run(cmd)
+
+    # Not executable: use heuristics by suffix
+    suffix = path.suffix.lower()
     python_exec = shutil.which("python3") or shutil.which("python") or sys.executable
-    try:
-        subprocess.run([python_exec, str(path)])
-    except Exception as e:
-        print(f"[ERROR] failed to run {script_name}: {e}")
+
+    if suffix == ".py":
+        cmd = [python_exec, str(path)]
+        print(f"[run_room] Running Python file: {cmd}")
+        return subprocess.run(cmd)
+    elif suffix == ".sh":
+        # prefer bash; fallback to /bin/sh
+        bash = shutil.which("bash") or "/bin/sh"
+        cmd = [bash, str(path)]
+        print(f"[run_room] Running shell script with: {cmd}")
+        return subprocess.run(cmd)
+    else:
+        # last resort: run via /bin/sh
+        cmd = ["/bin/sh", str(path)]
+        print(f"[run_room] Unknown extension; running with sh: {cmd}")
+        return subprocess.run(cmd)
 
 def show_help():
     print("\nHELP — How to use the Train Carts (educational only):")
@@ -136,7 +180,13 @@ def main():
                 print(expl['body'])
                 input("\nPress Enter to launch the room (or Ctrl-C to cancel)...")
 
-            run_room(ROOM_SCRIPTS[choice])
+            result = run_room(ROOM_SCRIPTS[choice])
+            if result is None:
+                print("Failed to start room.")
+            else:
+            # result is a CompletedProcess; check exit code
+                rc = result.returncode
+                print(f"Room exited with code {rc}.")
             input("\nPress Enter to return to the train menu...")
             clear()
             print_header()
@@ -145,11 +195,16 @@ def main():
             input("\nPress Enter to return to the train menu...")
             clear()
             print_header()
+        elif choice == 't' or choice == 'tools':
+            show_help()
+            input("\nPress Enter to return to the train menu...")
+            clear()
+            print_header()
         elif choice == 'q' or choice == 'quit' or choice == 'exit':
             print("Exiting. Stay safe and ethical.")
             break
         else:
-            print("Invalid choice. Enter 1, 2, h, or q.\n")
+            print("Invalid choice. Enter 1, 2, h, t, or q.\n")
 
 if __name__ == "__main__":
     main()
