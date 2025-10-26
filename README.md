@@ -83,7 +83,7 @@ Embark on a thrilling train heist adventure! This project combines interactive s
     * Navigate to the directory containing the C file (e.g., `theBigOne/galacticMail/`).
     * Compile the C program: `gcc cart-3.c -o cart-3`
     * Run the compiled program: `./cart-3`
-    * Compile all the c programs in the respective cart folders, including thecault
+    * Compile all the c programs in the respective cart folders, including the vault
     * Make sure to run all the scripts in the cart folders that start the nc connections
     * Each has to be a running process, so that the user can connect and use
 
