@@ -101,8 +101,8 @@ def show_menu():
     print()
 
 ROOM_SCRIPTS = {
-    "1": "cart-1.sh",        # shell script
-    "2": "ddos_room.py",     # python script
+    "1": "ddos_room.py",        # shell script
+    "2": "cart-1.sh",     # python script
     "3": ["bash", "-c", "echo 'ad-hoc command'; sleep 1"],  # arbitrary command
 }
 
