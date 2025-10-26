@@ -121,6 +121,6 @@ Contributions are welcome for creating new carts! Please follow these steps:
 3.  Make your changes and commit them with descriptive messages.
 4.  Submit a pull request
 
-Thank you for checking out the Train Heist project! I hope you find it both entertaining and educational. Your feedback and contributions are greatly appreciated!
+Thank you for checking out the Train Robbery project! I hope you find it both entertaining and educational. Your feedback and contributions are greatly appreciated!
 
 
