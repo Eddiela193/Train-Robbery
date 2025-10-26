@@ -1,12 +1,12 @@
 # Train-Robbery
 
-Credits:
+## Credits:
 
-About:
+## About:
 
-Installs:
+## Installs:
 
-Server Setup:
+## Server Setup:
 
-Client setup:
+## Client setup:
 
