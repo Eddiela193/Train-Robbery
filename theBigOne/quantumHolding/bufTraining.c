@@ -91,7 +91,7 @@ int main() {
                 flag = 0;
             }
             if ((f4 > 2000) || (f4 < 200)) {
-                strncat(response, "Try a different offset! Think between 3 and 4 digits, like 100 to 1000\n", sizeof(response)-strlen(response)-1);
+                strncat(response, "Try a different offset!\n", sizeof(response)-strlen(response)-1);
                 flag = 0;
             }
             if (flag == 1){
