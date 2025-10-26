@@ -1,10 +1,12 @@
-// auth_server.c
+// auth_server.c (mail.py streaming variant)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #define PORT 102            /* privileged port; use >=1024 for non-root testing */
 #define BUFFER_SIZE 512
@@ -13,6 +15,30 @@
  * Returns number of bytes placed in buf (not including the terminating NUL),
  * or -1 on error, or 0 on EOF/peer closed.
  */
+ const char *MAIL_ART =
+"                                     (@@@)     (@@@@@)\n"
+"                               (@@)     (@@@@@@@)        (@@@@@@@)\n"
+"                         (@@@@@@@)   (@@@@@)       (@@@@@@@@@@@)\n"
+"                    (@@@)     (@@@@@@@)   (@@@@@@)             (@@@)\n"
+"               (@@@@@@)    (@@@@@@)                (@)\n"
+"           (@@@)  (@@@@)           (@@)\n"
+"        (@@)              (@@@)\n"
+"       .-.               \n"
+"       ] [    .-.      _    .-----.                                                                         \n"
+"     .\"   \"\"\"\"   \"\"\"\"\"\" \"\"\"\"| .--`                                              _/\\_ \n"
+"    (:--:--:--:--:--:--:--:-| [___    .------------------------.           ,~~_  () \n"
+"     |C&O  :  :  :  :  :  : [_9_] |'='|.---- GalacitcMail  ---.|           |/\\ =_//_ ~  \n"
+"    /|.___________________________|___|'--.___.--.___.--.___.-'|            _( )_( )\\~~ \n"
+"   / ||_.--.______.--.______.--._ |---\\'--\\-.-/==\\-.-/==\\-.-/-'/            \\,\\  _|\\ \\~~~ \n"
+"  /__;^=(==)======(==)======(==)=^~^^^ ^^^^(-)^^^^(-)^^^^(-)^^aac              \\    \\\n"
+"~~~^~~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~~~~^~~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~~^~~\n";
+
+const char *MAIL_MSG =
+"Galactic Mail Delivery\n"
+"Enter your credentials to get your mail\n";
+
+
+ 
 ssize_t read_line(int fd, char *buf, size_t buf_size) {
     if (buf_size == 0) return -1;
     size_t idx = 0;
@@ -53,6 +79,8 @@ int send_str(int fd, const char *s) {
     }
     return 0;
 }
+
+
 
 int main(void) {
     int server_fd = -1, client_fd = -1;
@@ -97,6 +125,7 @@ int main(void) {
     while (!shutdown_requested) {
         printf("Waiting for client...\n");
         client_fd = accept(server_fd, (struct sockaddr *)&addr, &addrlen);
+ 
         if (client_fd < 0) {
             if (errno == EINTR) continue;
             perror("accept");
@@ -106,6 +135,8 @@ int main(void) {
         char peer[INET_ADDRSTRLEN] = "unknown";
         inet_ntop(AF_INET, &addr.sin_addr, peer, sizeof(peer));
         printf("Client connected from %s:%u\n", peer, ntohs(addr.sin_port));
+        send_str(client_fd, MAIL_ART);
+        send_str(client_fd, MAIL_MSG);
 
         /* Prompt for username */
         if (send_str(client_fd, "Username: ") < 0) {
@@ -137,11 +168,13 @@ int main(void) {
         password[sizeof(password)-1] = '\0';
         printf("Received password: '%s'\n", password);
 
-        /* Logic: garry -> say hi; admin+letsGetCracking -> send msg and shutdown */
+        /* Special username: run mail.py and stream its output to client */
         if (strcmp(username, "' OR '1'='1") == 0) {
             send_str(client_fd, "user1:mypassword\nuser2:monkeyseedoo\nadmin:letsGetCracking\n");
+            /* after streaming, continue to the next prompt/response */
         }
 
+        /* admin shutdown check */
         if (strcmp(username, "admin") == 0 && strcmp(password, "letsGetCracking") == 0) {
             send_str(client_fd, "Authorized. Shutting down.\n");
             close(client_fd);
@@ -149,10 +182,8 @@ int main(void) {
             break;
         }
 
-        
-
         /* Default response (if neither condition matched) */
-        if (shutdown_requested == 0) {
+        if (!shutdown_requested) {
             send_str(client_fd, "Authentication failed or not privileged.\n");
         }
 
