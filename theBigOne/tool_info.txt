@@ -1,0 +1,12 @@
+ovf:
+
+Usage: <nop slide len.> <address block len.> <SP Address> <offset>
+
+nop slide - integer value representing amount of bytes long the nop slide is, as a NOP in assemply is 1 byte
+
+address block - integer representing the amount of addresses to append after the nops and shellcode. 
+This value is not too important as long as it is above 2 or so.
+
+SP address - 32 bit address represented by 8 hex digits representing the bottom of the stack for the process
+
+offset - an integer value guessing where the user input is stored on the stack
