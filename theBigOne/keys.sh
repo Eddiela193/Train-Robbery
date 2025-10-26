@@ -1,10 +1,12 @@
+python3 key.py
+
 echo -e "The keys you are looking for unlock the vault
 at the end of the train, and the order does not matter.\n\n"
 
-echo -e "The keys are always in a file naked keyx with
+echo -e "The keys are always in a file named keyx with
 x being the cart number , ex. buffer overflow has key2.\n\n"
 
-sleep 2
+sleep 8
 
 echo -e "However, sometimes the file is hidden, and sometimes
 it is hidden in text, but it is always 4 digits and findable in
