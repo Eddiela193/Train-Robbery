@@ -29,7 +29,6 @@ def show_ascii(ascii_text, bg="#0b0f17", fg="#e6e6e6", font_size="12px"):
         {ascii_text}
     </div>
     """
-    display(HTML(html))
 
 # Display it
 show_ascii(GOLD_ART)
