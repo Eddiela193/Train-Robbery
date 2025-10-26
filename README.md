@@ -113,15 +113,13 @@ Embark on a thrilling train heist adventure! This project combines interactive s
 └── README.md
 ```
 
+## 💖 Thanks
 Contributions are welcome for creating new carts! Please follow these steps:
 
 1.  Fork the repository.
 2.  Create a new branch for your feature or bug fix.
 3.  Make your changes and commit them with descriptive messages.
 4.  Submit a pull request
-
-
-## 💖 Thanks
 
 Thank you for checking out the Train Heist project! I hope you find it both entertaining and educational. Your feedback and contributions are greatly appreciated!
 
