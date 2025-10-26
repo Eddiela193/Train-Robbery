@@ -3,8 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <errno.h>
 
-#define PORT 106
+#define PORT 103
 #define BUFFER_SIZE 512
 #define TOTAL_KEYS 5
 #define REQUIRED_KEYS 3
@@ -15,7 +19,7 @@ int main() {
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE];
 
-    int keys[TOTAL_KEYS] = {2168, 202, 303, 404, 505}; // predefined keys
+    int keys[TOTAL_KEYS] = {2168, 7018, 303, 404, 505};
 
     // Create socket
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -23,17 +27,12 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // Bind
+    int opt = 1;
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
-
-    int opt = 1;
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-        perror("setsockopt");
-        close(server_fd);
-        exit(EXIT_FAILURE);
-    }
 
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
         perror("Bind failed");
@@ -58,8 +57,8 @@ int main() {
         }
         printf("Client connected!\n");
 
-        // Send greeting and available keys
-        snprintf(buffer, sizeof(buffer), "Welcome to the Vault. enter your keys in any order to unlock.\n");
+        snprintf(buffer, sizeof(buffer), 
+            "Welcome to the Vault! Enter 3 keys separated by spaces:\n");
         send(client_fd, buffer, strlen(buffer), 0);
 
         ssize_t valread = read(client_fd, buffer, sizeof(buffer)-1);
@@ -72,12 +71,10 @@ int main() {
         int inputKeys[REQUIRED_KEYS];
         int valid = 1;
 
-        // Parse three integers from the input
-        if (sscanf(buffer, "%d %d %d", &inputKeys[0], &inputKeys[1], &inputKeys[2]) != REQUIRED_KEYS) {
+        if (sscanf(buffer, "%d %d %d", &inputKeys[0], &inputKeys[1], &inputKeys[2]) != REQUIRED_KEYS)
             valid = 0;
-        }
 
-        // Check that all keys exist in the predefined list
+        // verify keys exist
         for (int i = 0; i < REQUIRED_KEYS && valid; i++) {
             int found = 0;
             for (int j = 0; j < TOTAL_KEYS; j++) {
@@ -89,24 +86,53 @@ int main() {
             if (!found) valid = 0;
         }
 
-        // Check that all keys are distinct
+        // ensure distinct
         for (int i = 0; i < REQUIRED_KEYS && valid; i++) {
             for (int j = i+1; j < REQUIRED_KEYS; j++) {
-                if (inputKeys[i] == inputKeys[j]) {
+                if (inputKeys[i] == inputKeys[j])
                     valid = 0;
-                }
             }
         }
 
-        // Respond to client
         if (valid) {
-            snprintf(buffer, sizeof(buffer), "Congratulations! GOLD GOLD GOLD GOLD GOLD GOLD GOLD GOLD GOLD GOLD!\n");
+            snprintf(buffer, sizeof(buffer), "Congratulations! Unlocking GOLD...\n");
+            send(client_fd, buffer, strlen(buffer), 0);
+
+            // ---- Run gold.py and stream its output ----
+            int pipefd[2];
+            if (pipe(pipefd) == 0) {
+                pid_t pid = fork();
+                if (pid == 0) {
+                    // Child: redirect stdout -> pipe write end
+                    close(pipefd[0]);
+                    dup2(pipefd[1], STDOUT_FILENO);
+                    dup2(pipefd[1], STDERR_FILENO);
+                    close(pipefd[1]);
+                    execlp("python3", "python3", "gold.py", (char *)NULL);
+                    perror("execlp");
+                    _exit(127);
+                } else if (pid > 0) {
+                    close(pipefd[1]);
+                    char buf[1024];
+                    ssize_t r;
+                    while ((r = read(pipefd[0], buf, sizeof(buf))) > 0) {
+                        send(client_fd, buf, r, 0);
+                    }
+                    close(pipefd[0]);
+                    waitpid(pid, NULL, 0);
+                }
+            } else {
+                perror("pipe");
+            }
+
         } else {
-            snprintf(buffer, sizeof(buffer), "Invalid selection. Keys must exist and be distinct.\n");
+            snprintf(buffer, sizeof(buffer), 
+                "Invalid selection. Keys must exist and be distinct.\n");
+            send(client_fd, buffer, strlen(buffer), 0);
         }
-        send(client_fd, buffer, strlen(buffer), 0);
 
         close(client_fd);
+        break; // optional: stop after one client
     }
 
     close(server_fd);
