@@ -247,7 +247,7 @@ def main():
             print("Exiting. Stay safe and ethical.")
             break
         else:
-            print("Invalid choice. Enter 1, 2,3, h, t, k,or q.\n")
+            print("Invalid choice. Enter 1, 2, 3, h, t, k,or q.\n")
 
 if __name__ == "__main__":
     main()
