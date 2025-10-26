@@ -10,13 +10,31 @@ import subprocess
 import shutil
 import textwrap
 from pathlib import Path
+import os
 
-ROOM_SCRIPTS = {
-    "1": "cart-1.c", #Buffer Overflow Training Exercise
-    "2": "ddos_room.py",
-}
+
 
 EXPLAINERS = {
+    "1": {
+        "title": "Cart 1, the engine room: DDoS",
+        "body": textwrap.dedent("""
+        WHAT IT IS (high-level)
+        -----------------------
+        A Distributed Denial of Service (DDoS) occurs when a target receives so
+        much traffic or usage that legitimate users cannot access the service.
+
+        HOW IT WORKS (conceptual)
+        -------------------------
+        - High volume or resource-intensive requests can saturate bandwidth,
+          exhaust connection pools, or tie up server resources.
+        - Sources may be many distributed machines or concentrated bursts.
+        - This explanation is intentionally conceptual only.
+
+        TRAINING EXERCISE SUMMARY
+        ------------------------------------
+        - [Insert Later]
+        """)
+    },	
     "2": {
         "title": "Cart 2, the cargo hold: Buffer Overflow",
         "body": textwrap.dedent("""
@@ -38,34 +56,11 @@ EXPLAINERS = {
         - Program crashes on unusual input.
         - Corrupted data or unexpected behavior after certain long inputs.
         - Logs showing overly long or malformed inputs.
-
-        TRAINING EXERCISE SUMMARY
-        ------------------
-        - [Insert Later]
         """)
     },
-    "1": {
-        "title": "Cart 1, the engine room: DDoS",
-        "body": textwrap.dedent("""
-        WHAT IT IS (high-level)
-        -----------------------
-        A Distributed Denial of Service (DDoS) occurs when a target receives so
-        much traffic or usage that legitimate users cannot access the service.
-
-        HOW IT WORKS (conceptual)
-        -------------------------
-        - High volume or resource-intensive requests can saturate bandwidth,
-          exhaust connection pools, or tie up server resources.
-        - Sources may be many distributed machines or concentrated bursts.
-        - This explanation is intentionally conceptual only.
-
-        TRAINING EXERCISE SUMMARY
-        ------------------------------------
-        - [Insert Later]
-        """)
-    },
+    
     "h": {
-        "title": "Cart 2: DDoS",
+        "title": "Cart 1: DDoS",
         "body": textwrap.dedent("""
         links to articles, progression
         """)
@@ -75,8 +70,15 @@ EXPLAINERS = {
         "body": textwrap.dedent("""
         proc maps and other info about the train
         """)
+    },
+    "k": {
+        "title": "Cart 2: DDoS",
+        "body": textwrap.dedent("""
+        proc maps and other info about the train
+        """)
     }
 }
+
 
 
 def clear():
@@ -95,15 +97,20 @@ def show_menu():
     print("Choose a room to enter:")
     print(" 1) DDoS (traffic simulation & mitigation exercise)")
     print(" 2) Buffer Overflow (safe simulation & basic intrusion exercise)")
+    print(" 3) SQL Injection (investigation of syntax and safe scanning")
     print(" h) Help")
     print(" t) Tools & info")
+    print(" k) Keys and how to find them")
     print(" q) Quit")
     print()
 
 ROOM_SCRIPTS = {
-    "1": "ddos_room.py",        # shell script
-    "2": "cart-1.sh",     # python script
+    "1": "ddos_room.py",    # python script    
+    "2": "buf_room.sh",     # shell script
     "3": ["bash", "-c", "echo 'ad-hoc command'; sleep 1"],  # arbitrary command
+    "h": "help.sh",
+    "t": "info.sh",
+    "k": "keys.sh"
 }
 
 def run_room(script):
@@ -164,6 +171,8 @@ def show_help():
     print(" - Each cart is a safe simulation that teaches defensive concepts.")
     print(" - Do NOT attempt to use these programs against any real system.")
     print(" - For ethical practice, use legal CTF platforms and isolated labs.\n")
+    print(" - Visit https://github.com/Eddiela193/Train-Robbery for more information\n")
+    print(" - Also check out https://www.fortinet.com/resources/cyberglossary/buffer-overflow\n")
 
 def main():
     clear()
@@ -196,6 +205,11 @@ def main():
             clear()
             print_header()
         elif choice == 't' or choice == 'tools':
+            print_header()
+            input("\nPress Enter to return to the train menu...")
+            clear()
+            print_header()
+        elif choice == 'k' or choice == 'keys':
             show_help()
             input("\nPress Enter to return to the train menu...")
             clear()
@@ -204,7 +218,7 @@ def main():
             print("Exiting. Stay safe and ethical.")
             break
         else:
-            print("Invalid choice. Enter 1, 2, h, t, or q.\n")
+            print("Invalid choice. Enter 1, 2, h, t, k,or q.\n")
 
 if __name__ == "__main__":
     main()
