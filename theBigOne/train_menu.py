@@ -126,8 +126,8 @@ def show_menu():
     print()
 
 ROOM_SCRIPTS = {
-    "1": "ddos_room.py",    # python script    
-    "2": "buf_room.sh",     # shell script
+    "1": "ddos_room.sh",       
+    "2": "buf_room.sh",     
     "3": "sql_room.sh",
     "t": "info.sh",
     "k": "keys.sh"
