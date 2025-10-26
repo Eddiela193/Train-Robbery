@@ -63,6 +63,18 @@ EXPLAINERS = {
         ------------------------------------
         - [Insert Later]
         """)
+    },
+    "h": {
+        "title": "Cart 2: DDoS",
+        "body": textwrap.dedent("""
+        links to articles, progression
+        """)
+    },
+    "i": {
+        "title": "Cart 2: DDoS",
+        "body": textwrap.dedent("""
+        proc maps and other info about the train
+        """)
     }
 }
 
@@ -81,9 +93,10 @@ def print_header():
 
 def show_menu():
     print("Choose a room to enter:")
-    print(" 1) Buffer Overflow (safe simulation & defensive exercise)")
+    print(" 1) Buffer Overflow (safe simulation & basic intrusion exercise)")
     print(" 2) DDoS (traffic simulation & mitigation exercise)")
     print(" h) Help")
+    print(" t) Tools & info")
     print(" q) Quit")
     print()
 
