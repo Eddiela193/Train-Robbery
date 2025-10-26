@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# sql_injection_walkthrough.sh
 # Educational script: explains SQL Injection basics and why it matters.
 # Defensive/educational only — no exploit payloads or step-by-step attack instructions included.
 
