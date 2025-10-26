@@ -17,4 +17,4 @@ you have access to when successful in the exploit\n\n"
 
 sleep 10
 
-echo -e "DDos - \nBuffer - hidden file\nSQL - key hidden amongst text\n"
+echo -e "DDos - base64\nBuffer - hidden file\nSQL - key hidden amongst text\n"
