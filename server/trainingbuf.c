@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-#define PORT 60
+#define PORT 61
 #define BUFFER_SIZE 256
 
 int main() {
@@ -109,3 +109,4 @@ int main() {
     close(server_fd);
     return 0;
 }
+
